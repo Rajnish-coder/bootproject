@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/zee5appProduction
+    username: root
+    password: Pass@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: com.zee.zee5app.utils.CustomTableNameStrategy
+    show-sql: true
+    
