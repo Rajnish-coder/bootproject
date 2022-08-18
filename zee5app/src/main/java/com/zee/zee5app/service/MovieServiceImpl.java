@@ -27,7 +27,7 @@ public class MovieServiceImpl implements MovieService {
 	private MoviesRepository movieRepository;
 
 	@Override
-	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException, FileNotFoundException {
+	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException {
 
 		return movieRepository.save(movie);
 	}
@@ -88,9 +88,15 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Optional<Movie> getMovieByMovieId(String movieId) {
+	public Optional<Movie> getMovieByMovieId(String movieId) throws NoDataFoundException {
 		// TODO Auto-generated method stub
-		return movieRepository.findById(movieId);
+		Movie m = movieRepository.findById(movieId).get();
+		if(m == null)
+		{
+			throw new NoDataFoundException("movie does not exists");
+		}
+		else
+		   return movieRepository.findById(movieId);
 	}
 
 	@Override

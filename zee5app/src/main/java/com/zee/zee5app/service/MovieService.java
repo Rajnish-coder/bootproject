@@ -14,13 +14,13 @@ import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 @Service
 public interface MovieService {
   
-	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException, FileNotFoundException;
+	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException;
 	public Movie updateMovie(String movieId,Movie movie);
 	public String deleteMovieByMovieId(String movieId) throws NoDataFoundException;
 	public Optional<List<Movie>> getAllMovies();
 	public List<Movie> getAllMoviesByGenre(Genres genre);
 	public List<Movie> getAllMoviesByName(String movieName);
-	public Optional<Movie> getMovieByMovieId(String movieId);
+	public Optional<Movie> getMovieByMovieId(String movieId) throws NoDataFoundException;
 	public List<Movie> findByOrderByMovieNameDsc();
 	
 }

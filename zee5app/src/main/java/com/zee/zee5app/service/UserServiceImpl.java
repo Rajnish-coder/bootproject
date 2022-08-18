@@ -54,12 +54,30 @@ public class UserServiceImpl implements UserService {
 		return repo.save(user);
 	}
 
-	public Optional<List<User>> getAllUsers() {
-		return Optional.ofNullable(repo.findAll());
+	public Optional<List<User>> getAllUsers() throws NoDataFoundException {
+//		return Optional.ofNullable(repo.findAll());
+		List<User> u = repo.findAll();
+		if(u.size() == 0)
+		{
+			throw new NoDataFoundException("no data found");
+		}
+		else
+		{
+			return Optional.of(u);
+		}
 	}
 
-	public Optional<User> getUserById(String userId) {
-		return repo.findById(userId);
+	public Optional<User> getUserById(String userId) throws NoDataFoundException {
+		
+		User u = repo.findById(userId).get();
+		if(u == null)
+		{
+			throw new NoDataFoundException("user not found");
+		}
+		else
+		{
+			return Optional.of(u);
+		}
 	}
 
 	public String deleteUserById(String userId) throws NoDataFoundException {

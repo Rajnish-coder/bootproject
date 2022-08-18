@@ -17,6 +17,6 @@ public interface UserService {
 	public User insertUser(User user) throws UnableToGenerateIdException, EmailIdExistException, UsernameExistException;
 	public User updateUserById(String userId,User user);
 	public String deleteUserById(String userId) throws NoDataFoundException;
-	public Optional<List<User>> getAllUsers();
-	public Optional<User> getUserById(String userId);
+	public Optional<List<User>> getAllUsers() throws NoDataFoundException;
+	public Optional<User> getUserById(String userId) throws NoDataFoundException;
 }
