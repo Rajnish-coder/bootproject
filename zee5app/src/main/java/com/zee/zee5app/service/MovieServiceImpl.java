@@ -1,4 +1,5 @@
 package com.zee.zee5app.service;
+import java.util.Collections;
 import java.util.List;
 
 import java.io.BufferedInputStream;
@@ -19,6 +20,7 @@ import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.NoDataFoundException;
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.repos.MoviesRepository;
+import com.zee.zee5app.utils.MovieComparator;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -33,7 +35,7 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Movie updateMovie(String movieId, Movie movie) {
+	public Movie updateMovie(String movieId, Movie movie) throws NoDataFoundException {
 		// TODO Auto-generated method stub
 		if(movieRepository.existsById(movieId) == true)
 		{
@@ -51,7 +53,7 @@ public class MovieServiceImpl implements MovieService {
 			return m;
 		}
 		else {
-			return null;
+			throw new NoDataFoundException("movie does not exist by this id");
 		}
 	}
 
@@ -70,40 +72,66 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Optional<List<Movie>> getAllMovies() {
-		// TODO Auto-generated method stub
-		return Optional.ofNullable(movieRepository.findAll());
+	public Optional<List<Movie>> getAllMovies() throws NoDataFoundException {
+		
+		List<Movie> l = movieRepository.findAll();
+		if(l.size() ==0)
+		{
+			throw new NoDataFoundException("no records exits!");
+		}
+		else
+			return Optional.of(l);
 	}
 
 	@Override
-	public List<Movie> getAllMoviesByGenre(Genres genre) {
-		// TODO Auto-generated method stub
-		return movieRepository.findAllByGenre(genre);
+	public List<Movie> getAllMoviesByGenre(Genres genre) throws NoDataFoundException {
+		
+		List<Movie> l = movieRepository.findAllByGenre(genre);
+		if(l.size() ==0)
+		{
+			throw new NoDataFoundException("no records exits by this genre!");
+		}
+		else
+			return l;
 	}
 
 	@Override
-	public List<Movie> getAllMoviesByName(String movieName) {
-		// TODO Auto-generated method stub
-		return movieRepository.findAllByMovieName(movieName);
+	public List<Movie> getAllMoviesByName(String movieName) throws NoDataFoundException {
+		
+		List<Movie> l = movieRepository.findAllByMovieName(movieName);
+		if(l.size() ==0)
+		{
+			throw new NoDataFoundException("no records exits!");
+		}
+		else
+			return l;
 	}
 
 	@Override
 	public Optional<Movie> getMovieByMovieId(String movieId) throws NoDataFoundException {
 		// TODO Auto-generated method stub
-		Movie m = movieRepository.findById(movieId).get();
-		if(m == null)
+	
+		if(movieRepository.existsById(movieId)==false)
 		{
-			throw new NoDataFoundException("movie does not exists");
+			throw new NoDataFoundException("movie does not exists by this id");
 		}
 		else
 		   return movieRepository.findById(movieId);
 	}
 
 	@Override
-	public List<Movie> findByOrderByMovieNameDsc() {
-		// TODO Auto-generated method stub
-
-		return null;
+	public List<Movie> findByOrderByMovieNameDsc() throws NoDataFoundException {
+		
+		List<Movie> l = movieRepository.findAll();
+		if(l.size() == 0)
+		{
+			throw new NoDataFoundException("no records exits!");
+		}
+		else
+		{
+			Collections.sort(l,new MovieComparator());
+			return l;
+		}
 	}
 
 }

@@ -15,7 +15,7 @@ import com.zee.zee5app.exceptions.UsernameExistException;
 public interface UserService {
 
 	public User insertUser(User user) throws UnableToGenerateIdException, EmailIdExistException, UsernameExistException;
-	public User updateUserById(String userId,User user);
+	public User updateUserById(String userId,User user) throws NoDataFoundException;
 	public String deleteUserById(String userId) throws NoDataFoundException;
 	public Optional<List<User>> getAllUsers() throws NoDataFoundException;
 	public Optional<User> getUserById(String userId) throws NoDataFoundException;

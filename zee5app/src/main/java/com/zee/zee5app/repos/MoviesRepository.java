@@ -15,4 +15,6 @@ public interface MoviesRepository extends JpaRepository<Movie, String>
 	// find -->  select * from movie_table
 	public List<Movie> findAllByMovieName(String movieName);
     public List<Movie> findAllByGenre(Genres genre);
+    boolean existsById(String movieId);
+   // public List<Movie> findByOrderByMovieNameDescending();
 }

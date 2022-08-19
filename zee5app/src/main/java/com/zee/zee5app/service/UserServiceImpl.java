@@ -69,13 +69,13 @@ public class UserServiceImpl implements UserService {
 
 	public Optional<User> getUserById(String userId) throws NoDataFoundException {
 		
-		User u = repo.findById(userId).get();
-		if(u == null)
+		if(repo.existsById(userId) == false)
 		{
-			throw new NoDataFoundException("user not found");
+			throw new NoDataFoundException("user not found by this id");
 		}
 		else
 		{
+			User u = repo.findById(userId).get();
 			return Optional.of(u);
 		}
 	}
@@ -92,13 +92,15 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	public User updateUserById(String userId, User user) {
+	public User updateUserById(String userId, User user) throws NoDataFoundException {
 		
 		if(repo.existsById(userId) == true)
 		{
 			User u = repo.findById(userId).get();
 			u.setFirstName(user.getFirstName());
 			u.setLastName(user.getLastName());
+			u.setUsername(user.getUsername());
+			u.setPassword(user.getPassword());
 			u.setEmail(user.getEmail());
 			u.setDob(user.getDob());
 			u.setDoj(user.getDoj());
@@ -108,7 +110,7 @@ public class UserServiceImpl implements UserService {
 		}
 		else
 		{
-			return null;
+			throw new NoDataFoundException("user does not exist by this id");
 		}
 	}
 

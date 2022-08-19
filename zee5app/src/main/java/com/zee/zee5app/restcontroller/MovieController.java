@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,7 @@ public class MovieController {
 		
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/getid/{id}")
 	public ResponseEntity<?> getMovieById(@PathVariable("id") String id) throws NoDataFoundException
 	{
 		Movie m = movieService.getMovieByMovieId(id).get();
@@ -43,10 +44,15 @@ public class MovieController {
 	}
 	
 	@GetMapping()
-	public ResponseEntity<?> getAllMovies()
+	public ResponseEntity<?> getAllMovies() throws NoDataFoundException
 	{
 		List<Movie> l = movieService.getAllMovies().get();
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+		if(l.size() == 0)
+		{
+			throw new NoDataFoundException("no records exits!");
+		}
+		else
+		    return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -56,19 +62,33 @@ public class MovieController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("success");
 	}
 	
-//	@GetMapping("/{movieName}")
-//	public ResponseEntity<?> getMoviesByMovieName(@PathVariable("movieName") String movieName)
-//	{
-//		List<Movie> l = movieService.getAllMoviesByName(movieName);
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
-//	}
-//	
-//	@GetMapping("/{genre}")
-//	public ResponseEntity<?> getMoviesByMovieName(@PathVariable("genre") Genres genre)
-//	{
-//		List<Movie> l = movieService.getAllMoviesByGenre(genre);
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
-//	}
+	@GetMapping("byMovieName/{movieName}")
+	public ResponseEntity<?> getMoviesByMovieName(@PathVariable("movieName") String movieName) throws NoDataFoundException
+	{
+		List<Movie> l = movieService.getAllMoviesByName(movieName);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+	}
+	
+	@GetMapping("byGenre/{genre}")
+	public ResponseEntity<?> getMoviesByMovieGenre(@PathVariable("genre") Genres genre) throws NoDataFoundException
+	{
+		List<Movie> l = movieService.getAllMoviesByGenre(genre);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+	}
+	
+	@GetMapping("byMovieNameDesc")
+	public ResponseEntity<?> getMoviesByDesc() throws NoDataFoundException
+	{
+		List<Movie> l = movieService.findByOrderByMovieNameDsc();
+		return ResponseEntity.ok().body(l);
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<?> updateMovie(@PathVariable("id") String id,Movie movie) throws NoDataFoundException
+	{
+		Movie m = movieService.updateMovie(id, movie);
+		return ResponseEntity.ok().body(m);
+	}
 	
 	
 }

@@ -1,7 +1,5 @@
 package com.zee.zee5app.restcontroller;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,30 +14,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zee.zee5app.dto.Movie;
 import com.zee.zee5app.dto.User;
+import com.zee.zee5app.dto.WebSeries;
+import com.zee.zee5app.enums.Genres;
 import com.zee.zee5app.exceptions.EmailIdExistException;
 import com.zee.zee5app.exceptions.NoDataFoundException;
 import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 import com.zee.zee5app.exceptions.UsernameExistException;
 import com.zee.zee5app.service.UserService;
+import com.zee.zee5app.service.WebSeriesService;
 
 @RestController
-@RequestMapping("/api/user")
-public class UserController {
-	
+@RequestMapping("/api/web")
+public class WebController {
+
 	@Autowired
-	UserService userService;
+	WebSeriesService webSeriesService;
 
 	@PostMapping("/add") // post method + request mapping. Since version 4.3
 	// @RequestBody is used to transform json object to java object in the controller.
-	public ResponseEntity<?> createUser(@RequestBody User user) throws UnableToGenerateIdException, EmailIdExistException, UsernameExistException
+	public ResponseEntity<?> createWebSeries(@RequestBody WebSeries web) throws UnableToGenerateIdException, EmailIdExistException, UsernameExistException
 	{
 //		User u = new User("0","rajnish sho","pass","raj","sho",
 //				"rajnish123@gmail.com",LocalDate.now(),LocalDate.now(),true);
 		
 	
-			User u2 = userService.insertUser(user);
-			return ResponseEntity.status(HttpStatus.CREATED).body(u2);
+			WebSeries w2 = webSeriesService.insertWebSeries(web);
+			return ResponseEntity.status(HttpStatus.CREATED).body(w2);
 //		} catch (UnableToGenerateIdException e) {
 //			
 //			e.printStackTrace();
@@ -64,31 +66,52 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getUserById(@PathVariable("id") String id) throws NoDataFoundException
+	public ResponseEntity<?> getWebById(@PathVariable("id") String id) throws NoDataFoundException
 	{
-			User u = userService.getUserById(id).get();
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(u);
+			WebSeries w = webSeriesService.getWebSeriesById(id).get();
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(w);
 	}
 	
 	@GetMapping()
-	public ResponseEntity<?> getAllUsers() throws NoDataFoundException
+	public ResponseEntity<?> getAllWebSeries() throws NoDataFoundException
 	{
-			List<User> data =  userService.getAllUsers().get();
+			List<WebSeries> data = webSeriesService.getAllWebSeries().get();
 			return ResponseEntity.accepted().body(data);
 	}
 	
 	@DeleteMapping("/{id}")
 	// @PathVariable is used to internally convert data type.
-	public String deleteUser(@PathVariable("id") String id) throws NoDataFoundException
+	public ResponseEntity<?> deleteWebSeries(@PathVariable("id") String id) throws NoDataFoundException
 	{
-			userService.deleteUserById(id);
-			return "success";
+			webSeriesService.deleteWebSeriesById(id);
+			return ResponseEntity.ok().body("success");
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateUser(@PathVariable("id") String id,@RequestBody User user) throws NoDataFoundException
+	public ResponseEntity<?> updateWeb(@PathVariable("id") String id,@RequestBody WebSeries ws) throws NoDataFoundException
 	{
-	       User u = userService.updateUserById(id, user);
+	       WebSeries u = webSeriesService.updateWebSeries(id, ws).get();
 	       return ResponseEntity.ok().body(u);
+	}
+	
+	@GetMapping("byWebName/{webName}")
+	public ResponseEntity<?> getWebByWebName(@PathVariable("webName") String webName) throws NoDataFoundException
+	{
+		List<WebSeries> l = webSeriesService.getAllWebSeriesByName(webName);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+	}
+	
+	@GetMapping("byGenre/{genre}")
+	public ResponseEntity<?> getWebByWebGenre(@PathVariable("genre") Genres genre) throws NoDataFoundException
+	{
+		List<WebSeries> l = webSeriesService.getAllWebSeriesByGenre(genre);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+	}
+	
+	@GetMapping("byWebNameDesc")
+	public ResponseEntity<?> getWebByDesc() throws NoDataFoundException
+	{
+		List<WebSeries> l = webSeriesService.findByOrderByWebSeriesNameDsc();
+		return ResponseEntity.ok().body(l);
 	}
 }
