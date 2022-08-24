@@ -1,19 +1,25 @@
 package com.zee.zee5app.dto;
-
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,7 +41,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @Entity
-//@Table(name = "user_table")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "email"),
+		@UniqueConstraint(columnNames = "username")})
 
 public class User {
 	
@@ -53,7 +60,7 @@ public class User {
 	@Size(max = 100)
 	private String username;
 	@NotNull
-	@Size(max = 50)
+//	@Size(min=3, max = 50)
 	private String password;
 	@NotNull
 	@Size(max = 50)
@@ -77,6 +84,11 @@ public class User {
 	private LocalDate dob;
 	private boolean isActive;
 	
+	@ManyToMany(fetch = FetchType.LAZY) 
+	
+	@JoinTable(name="user_role",joinColumns = @JoinColumn(name="userId"),
+	inverseJoinColumns = @JoinColumn(name="roleId"))
+	private Set<Role> roles = new HashSet<>();
 	
 	
 }
