@@ -29,8 +29,15 @@ public class MovieServiceImpl implements MovieService {
 	private MoviesRepository movieRepository;
 
 	@Override
-	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException {
+	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException, NoDataFoundException {
 
+		
+			List<Movie> m = getAllMoviesByName(movie.getMovieName());
+			if(m.size()>=1)
+			{
+				throw new NoDataFoundException("movie already exists!"); 
+			}
+		
 		return movieRepository.save(movie);
 	}
 
@@ -96,12 +103,13 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public List<Movie> getAllMoviesByName(String movieName) throws NoDataFoundException {
+	public List<Movie> getAllMoviesByName(String movieName) {
 		
 		List<Movie> l = movieRepository.findAllByMovieName(movieName);
 		if(l.size() ==0)
 		{
-			throw new NoDataFoundException("no records exits!");
+			//throw new NoDataFoundException("no records exits!");
+			return l;
 		}
 		else
 			return l;

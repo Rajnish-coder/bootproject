@@ -14,7 +14,7 @@ import com.zee.zee5app.exceptions.UnableToGenerateIdException;
 @Service
 public interface MovieService {
   
-	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException;
+	public Movie insertMovie(Movie movie) throws UnableToGenerateIdException, NoDataFoundException;
 	public Movie updateMovie(String movieId,Movie movie) throws NoDataFoundException;
 	public String deleteMovieByMovieId(String movieId) throws NoDataFoundException;
 	public Optional<List<Movie>> getAllMovies() throws NoDataFoundException;

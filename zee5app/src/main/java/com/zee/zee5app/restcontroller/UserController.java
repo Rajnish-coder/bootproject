@@ -71,14 +71,16 @@ public class UserController {
 		
 		     User u2 = new User();
 		     u2.setFirstName(signUpRequest.getFirstName());
-		     u2.setLastName(signUpRequest.getLastName());
+		     u2.setLastName("X");
 		     u2.setUsername(signUpRequest.getUsername());
 		     u2.setEmail(signUpRequest.getEmail());
 		     u2.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-		     u2.setDob(signUpRequest.getDob());
+		     //u2.setDob(signUpRequest.getDob());
+		     u2.setDob(LocalDate.now());
 		     u2.setDoj(LocalDate.now());
 		     
 		     Set<String> strroles = signUpRequest.getRole();
+		    
 		     Set<Role> roles = new HashSet<>();
 		     if(strroles == null)
 		     {
@@ -127,7 +129,7 @@ public class UserController {
 			  userService.insertUser(u2);
 			  
 			  
-			return ResponseEntity.status(201).body("user created successfully");
+			return ResponseEntity.status(201).body(u2);
 	
 //			 u2 = userService.insertUser(u2);
 //		    System.out.println(signUpRequest);

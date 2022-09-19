@@ -65,7 +65,7 @@ public class WebController {
 		
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("/getid/{id}")
 	public ResponseEntity<?> getWebById(@PathVariable("id") String id) throws NoDataFoundException
 	{
 			WebSeries w = webSeriesService.getWebSeriesById(id).get();
@@ -98,7 +98,12 @@ public class WebController {
 	public ResponseEntity<?> getWebByWebName(@PathVariable("webName") String webName) throws NoDataFoundException
 	{
 		List<WebSeries> l = webSeriesService.getAllWebSeriesByName(webName);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+		if(l.size() == 0)
+		{
+			throw new NoDataFoundException("no webSeries exits by this name!");
+		}
+		else
+		    return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
 	}
 	
 	@GetMapping("byGenre/{genre}")

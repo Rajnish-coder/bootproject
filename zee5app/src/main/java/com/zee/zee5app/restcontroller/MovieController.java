@@ -31,9 +31,16 @@ public class MovieController {
 	@PostMapping("/add")
 	public ResponseEntity<?> createMovie(@RequestBody Movie movie) throws UnableToGenerateIdException
 	{
-		Movie m = movieService.insertMovie(movie);
-		return ResponseEntity.status(HttpStatus.CREATED).body(m);
-		
+		Movie m;
+		try {
+			m = movieService.insertMovie(movie);
+			return ResponseEntity.status(HttpStatus.CREATED).body(m);
+		} catch (UnableToGenerateIdException | NoDataFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("movie already exists!");
+		}
+			
 	}
 	
 	@GetMapping("/getid/{id}")
@@ -66,7 +73,12 @@ public class MovieController {
 	public ResponseEntity<?> getMoviesByMovieName(@PathVariable("movieName") String movieName) throws NoDataFoundException
 	{
 		List<Movie> l = movieService.getAllMoviesByName(movieName);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
+		if(l.size() == 0)
+		{
+			throw new NoDataFoundException("no movie exits by this name!");
+		}
+		else
+		    return ResponseEntity.status(HttpStatus.ACCEPTED).body(l);
 	}
 	
 	@GetMapping("byGenre/{genre}")
@@ -84,7 +96,7 @@ public class MovieController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateMovie(@PathVariable("id") String id,Movie movie) throws NoDataFoundException
+	public ResponseEntity<?> updateMovie(@PathVariable("id") String id,@RequestBody Movie movie) throws NoDataFoundException
 	{
 		Movie m = movieService.updateMovie(id, movie);
 		return ResponseEntity.ok().body(m);

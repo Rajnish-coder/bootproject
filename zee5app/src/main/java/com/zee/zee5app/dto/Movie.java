@@ -65,7 +65,7 @@ public class Movie {
 	// for storing large objects
 	//@Lob
 	// to store any media content , use Lob as datatype.
-	@NotNull
+	//@NotNull
 	private String trailer1;
 	// private byte[] trailer2;
 
